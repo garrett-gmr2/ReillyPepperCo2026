@@ -1,0 +1,326 @@
+
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: var(--font-sans); }
+  .plan { padding: 1.5rem 0; }
+  .plan-header { margin-bottom: 2rem; }
+  .plan-header h1 { font-size: 22px; font-weight: 500; color: var(--color-text-primary); margin-bottom: 4px; }
+  .plan-header p { font-size: 14px; color: var(--color-text-secondary); }
+  .meal-card { background: var(--color-background-primary); border: 0.5px solid var(--color-border-tertiary); border-radius: var(--border-radius-lg); margin-bottom: 1.5rem; overflow: hidden; }
+  .meal-header { padding: 1rem 1.25rem; border-bottom: 0.5px solid var(--color-border-tertiary); display: flex; align-items: flex-start; justify-content: space-between; gap: 12px; }
+  .meal-tag { font-size: 11px; font-weight: 500; padding: 3px 10px; border-radius: 20px; white-space: nowrap; flex-shrink: 0; }
+  .tag-lunch { background: var(--color-background-success); color: var(--color-text-success); }
+  .tag-dinner { background: var(--color-background-info); color: var(--color-text-info); }
+  .meal-title { font-size: 18px; font-weight: 500; color: var(--color-text-primary); margin-bottom: 2px; }
+  .meal-origin { font-size: 13px; color: var(--color-text-secondary); }
+  .meal-flavor { font-size: 14px; color: var(--color-text-secondary); padding: 0.75rem 1.25rem; border-bottom: 0.5px solid var(--color-border-tertiary); font-style: italic; line-height: 1.6; }
+  .meal-body { padding: 1rem 1.25rem; }
+  .section-label { font-size: 11px; font-weight: 500; color: var(--color-text-tertiary); text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 8px; margin-top: 1rem; }
+  .section-label:first-child { margin-top: 0; }
+  .ingredients { display: flex; flex-direction: column; gap: 4px; }
+  .ingredient { font-size: 13px; color: var(--color-text-primary); padding: 3px 0; display: flex; gap: 8px; }
+  .ingredient::before { content: "—"; color: var(--color-text-tertiary); flex-shrink: 0; }
+  .steps { display: flex; flex-direction: column; gap: 10px; counter-reset: steps; }
+  .step { font-size: 13px; color: var(--color-text-primary); line-height: 1.6; padding-left: 24px; position: relative; counter-increment: steps; }
+  .step::before { content: counter(steps); position: absolute; left: 0; top: 1px; font-size: 11px; font-weight: 500; color: var(--color-text-tertiary); width: 16px; text-align: right; }
+  .equip-box { background: var(--color-background-warning); border-radius: var(--border-radius-md); padding: 10px 12px; margin-top: 1rem; }
+  .equip-box .section-label { color: var(--color-text-warning); margin-bottom: 4px; margin-top: 0; }
+  .equip-box p { font-size: 13px; color: var(--color-text-warning); line-height: 1.5; }
+  .meta-row { display: flex; gap: 10px; margin-top: 1rem; flex-wrap: wrap; }
+  .meta-chip { background: var(--color-background-secondary); border: 0.5px solid var(--color-border-tertiary); border-radius: var(--border-radius-md); padding: 6px 12px; font-size: 12px; color: var(--color-text-secondary); display: flex; align-items: center; gap: 5px; }
+  .meta-chip i { font-size: 14px; }
+  .nutrition-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(0, 1fr)); gap: 8px; margin-top: 1rem; }
+  .nut-card { background: var(--color-background-secondary); border-radius: var(--border-radius-md); padding: 8px 10px; text-align: center; }
+  .nut-val { font-size: 15px; font-weight: 500; color: var(--color-text-primary); }
+  .nut-label { font-size: 11px; color: var(--color-text-tertiary); margin-top: 2px; }
+  .expand-btn { width: 100%; text-align: left; padding: 0.75rem 1.25rem; font-size: 13px; font-weight: 500; color: var(--color-text-secondary); background: none; border: none; border-top: 0.5px solid var(--color-border-tertiary); cursor: pointer; display: flex; align-items: center; justify-content: space-between; }
+  .expand-btn:hover { color: var(--color-text-primary); background: var(--color-background-secondary); }
+  .collapsible { display: none; padding: 0 1.25rem 1.25rem; border-top: 0.5px solid var(--color-border-tertiary); }
+  .collapsible.open { display: block; }
+  .grocery-section { background: var(--color-background-primary); border: 0.5px solid var(--color-border-tertiary); border-radius: var(--border-radius-lg); padding: 1.25rem; margin-top: 0.5rem; }
+  .grocery-category { margin-bottom: 1rem; }
+  .grocery-category:last-child { margin-bottom: 0; }
+  .grocery-cat-label { font-size: 12px; font-weight: 500; color: var(--color-text-tertiary); text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 6px; }
+  .grocery-items { display: flex; flex-wrap: wrap; gap: 6px; }
+  .grocery-item { font-size: 13px; background: var(--color-background-secondary); border: 0.5px solid var(--color-border-tertiary); border-radius: var(--border-radius-md); padding: 4px 10px; color: var(--color-text-primary); }
+  .section-divider { font-size: 13px; font-weight: 500; color: var(--color-text-tertiary); letter-spacing: 0.04em; margin: 1.5rem 0 0.75rem; display: flex; align-items: center; gap: 8px; }
+  .section-divider::after { content: ""; flex: 1; height: 0.5px; background: var(--color-border-tertiary); }
+</style>
+
+<div class="plan">
+  <h2 class="sr-only">Mealtime half-week meal plan with one lunch and two dinners</h2>
+
+  <div class="plan-header">
+    <h1>Your half-week plan</h1>
+    <p>1 lunch · 2 dinners · 3 global regions</p>
+  </div>
+
+  <!-- MEAL 1: LUNCH -->
+  <div class="section-divider">Lunch</div>
+  <div class="meal-card">
+    <div class="meal-header">
+      <div>
+        <div class="meal-title">Thai-style pineapple fried rice</div>
+        <div class="meal-origin">Southeast Asian — Thai</div>
+      </div>
+      <span class="meal-tag tag-lunch">Lunch · 6 servings</span>
+    </div>
+    <div class="meal-flavor">Savory-sweet jasmine rice wok-tossed with fresh pineapple, shrimp, and toasted cashews — finished with fish sauce and a hit of lime. Leftovers hold beautifully.</div>
+    <div class="meal-body">
+      <div class="section-label">Ingredients</div>
+      <div class="ingredients">
+        <div class="ingredient">3 cups jasmine rice (cooked day-ahead, chilled)</div>
+        <div class="ingredient">1 lb large shrimp, peeled and deveined</div>
+        <div class="ingredient">2 cups fresh pineapple, diced (use your pineapple)</div>
+        <div class="ingredient">3 eggs</div>
+        <div class="ingredient">1 cup frozen peas</div>
+        <div class="ingredient">4 scallions, sliced</div>
+        <div class="ingredient">4 garlic cloves, minced</div>
+        <div class="ingredient">1 tbsp fresh ginger, grated</div>
+        <div class="ingredient">3 tbsp soy sauce</div>
+        <div class="ingredient">1 tbsp fish sauce</div>
+        <div class="ingredient">1 tbsp sesame oil</div>
+        <div class="ingredient">2 tbsp neutral oil (avocado or canola)</div>
+        <div class="ingredient">½ cup roasted cashews</div>
+        <div class="ingredient">1 lime, juiced (use your lemons if preferred)</div>
+        <div class="ingredient">Fresh cilantro to finish</div>
+      </div>
+
+      <button class="expand-btn" onclick="toggleSection('steps-lunch')">
+        Step-by-step instructions <i class="ti ti-chevron-down" aria-hidden="true"></i>
+      </button>
+      <div id="steps-lunch" class="collapsible">
+        <div class="steps" style="margin-top: 0.75rem;">
+          <div class="step">Cook jasmine rice a day ahead and refrigerate uncovered. Cold, dry rice is essential — fresh rice holds too much moisture and steams instead of frying, producing clumped, mushy results.</div>
+          <div class="step">Heat a large pan or wok over high heat until smoking. Add 1 tbsp neutral oil. Sear shrimp 90 seconds per side — don't crowd. Remove and set aside.</div>
+          <div class="step">Add remaining oil. Sauté garlic and ginger 30 seconds until fragrant, then add pineapple and cook 2 minutes to caramelize the edges slightly.</div>
+          <div class="step">Push everything to the sides. Crack eggs into the center and scramble until just set, then fold into the pineapple mixture.</div>
+          <div class="step">Add cold rice. Press it flat against the pan and let it sit 60–90 seconds untouched — this creates the lightly crisped crust that distinguishes good fried rice. Toss and repeat once.</div>
+          <div class="step">Add soy sauce, fish sauce, and sesame oil. Toss to coat evenly. Fold in peas, scallions, and shrimp.</div>
+          <div class="step">Finish with lime juice and cashews. Top with cilantro. Serve immediately, or refrigerate — reheats well in a hot pan.</div>
+        </div>
+      </div>
+    </div>
+    <div class="equip-box" style="margin: 0 1.25rem 1rem;">
+      <div class="section-label"><i class="ti ti-flame" aria-hidden="true"></i> Equipment callout</div>
+      <p>The Blackstone griddle is ideal here — its large surface area lets you spread all the rice flat for simultaneous crust formation. A standard wok or large skillet works, but you'll need to work in batches to avoid steaming.</p>
+    </div>
+    <div class="nutrition-row" style="margin: 0 1.25rem 1rem;">
+      <div class="nut-card"><div class="nut-val">~420</div><div class="nut-label">Calories</div></div>
+      <div class="nut-card"><div class="nut-val">28g</div><div class="nut-label">Protein</div></div>
+      <div class="nut-card"><div class="nut-val">~52g</div><div class="nut-label">Carbs</div></div>
+      <div class="nut-card"><div class="nut-val">High</div><div class="nut-label">Vitamin C (pineapple)</div></div>
+    </div>
+    <div class="meta-row" style="margin: 0 1.25rem 1rem;">
+      <div class="meta-chip"><i class="ti ti-clock" aria-hidden="true"></i> 15 min prep</div>
+      <div class="meta-chip"><i class="ti ti-flame" aria-hidden="true"></i> 15 min cook</div>
+      <div class="meta-chip"><i class="ti ti-archive" aria-hidden="true"></i> Leftovers: 4 days</div>
+    </div>
+  </div>
+
+  <!-- MEAL 2: SMOKER PIZZA -->
+  <div class="section-divider">Dinner 1</div>
+  <div class="meal-card">
+    <div class="meal-header">
+      <div>
+        <div class="meal-title">Smoker pizza on homemade naan — white garlic + chicken</div>
+        <div class="meal-origin">South Asian base · American BBQ technique</div>
+      </div>
+      <span class="meal-tag tag-dinner">Dinner · 4 servings</span>
+    </div>
+    <div class="meal-flavor">Pillowy hand-stretched naan acts as the crust — topped with roasted garlic cream, smoked chicken thighs, fresh mozzarella, and a lemon-herb finish. The pellet smoker adds a subtle wood note that a conventional oven never touches.</div>
+    <div class="meal-body">
+      <div class="section-label">Naan dough ingredients</div>
+      <div class="ingredients">
+        <div class="ingredient">2¼ tsp instant yeast</div>
+        <div class="ingredient">1 cup warm water</div>
+        <div class="ingredient">3 cups all-purpose flour</div>
+        <div class="ingredient">½ cup plain Greek yogurt</div>
+        <div class="ingredient">2 tbsp olive oil</div>
+        <div class="ingredient">1 tsp salt</div>
+        <div class="ingredient">1 tsp sugar</div>
+      </div>
+
+      <div class="section-label" style="margin-top: 1rem;">Topping ingredients</div>
+      <div class="ingredients">
+        <div class="ingredient">3 boneless skinless chicken thighs</div>
+        <div class="ingredient">6 garlic cloves</div>
+        <div class="ingredient">4 oz cream cheese, softened</div>
+        <div class="ingredient">¼ cup heavy cream</div>
+        <div class="ingredient">8 oz fresh mozzarella, torn</div>
+        <div class="ingredient">1 lemon, zested and juiced (use your lemons)</div>
+        <div class="ingredient">Fresh thyme or rosemary</div>
+        <div class="ingredient">Olive oil, salt, pepper, red pepper flakes</div>
+        <div class="ingredient">Fresh arugula (optional finish)</div>
+      </div>
+
+      <button class="expand-btn" onclick="toggleSection('steps-pizza')">
+        Step-by-step instructions <i class="ti ti-chevron-down" aria-hidden="true"></i>
+      </button>
+      <div id="steps-pizza" class="collapsible">
+        <div class="steps" style="margin-top: 0.75rem;">
+          <div class="step">Make naan dough: combine yeast, sugar, and warm water — rest 5 minutes until foamy. Mix in flour, yogurt, olive oil, and salt until a shaggy dough forms. Knead 5–6 minutes until smooth and slightly tacky. Cover and rest 1 hour until doubled.</div>
+          <div class="step">While dough rests, preheat pellet smoker to 275°F with a mild wood like apple or cherry. Season chicken thighs with salt, pepper, and olive oil. Smoke 45–55 minutes until internal temp hits 165°F. Rest 10 minutes, then slice thin.</div>
+          <div class="step">Roasted garlic sauce: wrap garlic cloves in foil with a drizzle of olive oil — place directly on the smoker grate the last 30 minutes. When soft, squeeze cloves out and blend with cream cheese and heavy cream until smooth. Season with salt and lemon zest.</div>
+          <div class="step">Divide dough into 4 equal portions. On a lightly floured surface, stretch or roll each into a roughly oval shape, about ¼ inch thick. Don't aim for perfect circles — rustic edges cook better.</div>
+          <div class="step">Crank smoker to 450°F (or as high as it goes). Place naan directly on the grates. Cook 3–4 minutes until the bottom has grill marks and is set but not fully cooked through.</div>
+          <div class="step">Flip naan. Working quickly, spread garlic cream, top with torn mozzarella and sliced chicken. Close the lid and cook 4–5 more minutes until cheese is melted and edges are golden.</div>
+          <div class="step">Remove from smoker. Finish with lemon juice, red pepper flakes, and fresh herbs. Top with arugula if using — it wilts perfectly on the residual heat.</div>
+        </div>
+      </div>
+    </div>
+    <div class="equip-box" style="margin: 0 1.25rem 1rem;">
+      <div class="section-label"><i class="ti ti-flame" aria-hidden="true"></i> Equipment callout</div>
+      <p>The pellet smoker does real work here — both the chicken and garlic absorb smoke during the low-temp phase, then the high-heat finish blisters the naan directly on the grates. A pizza stone placed inside the smoker during preheat is optional but adds bottom crunch.</p>
+    </div>
+    <div class="nutrition-row" style="margin: 0 1.25rem 1rem;">
+      <div class="nut-card"><div class="nut-val">~560</div><div class="nut-label">Calories</div></div>
+      <div class="nut-card"><div class="nut-val">38g</div><div class="nut-label">Protein</div></div>
+      <div class="nut-card"><div class="nut-val">~48g</div><div class="nut-label">Carbs</div></div>
+      <div class="nut-card"><div class="nut-val">High</div><div class="nut-label">Selenium (chicken)</div></div>
+    </div>
+    <div class="meta-row" style="margin: 0 1.25rem 1rem;">
+      <div class="meta-chip"><i class="ti ti-clock" aria-hidden="true"></i> 25 min active prep</div>
+      <div class="meta-chip"><i class="ti ti-clock" aria-hidden="true"></i> 1 hr dough rest</div>
+      <div class="meta-chip"><i class="ti ti-flame" aria-hidden="true"></i> 60 min cook</div>
+    </div>
+  </div>
+
+  <!-- MEAL 3: DINNER 2 -->
+  <div class="section-divider">Dinner 2</div>
+  <div class="meal-card">
+    <div class="meal-header">
+      <div>
+        <div class="meal-title">Moroccan-spiced turkey skillet with lemon couscous</div>
+        <div class="meal-origin">North African — Moroccan</div>
+      </div>
+      <span class="meal-tag tag-dinner">Dinner · 4 servings</span>
+    </div>
+    <div class="meal-flavor">Ground turkey simmered with warm spices — cumin, coriander, cinnamon — in a tomato-chickpea sauce. Finished with preserved-style lemon brightness and served over fluffy couscous. Bold, warming, and weeknight-fast.</div>
+    <div class="meal-body">
+      <div class="section-label">Ingredients</div>
+      <div class="ingredients">
+        <div class="ingredient">1.25 lbs lean ground turkey</div>
+        <div class="ingredient">1 can (15 oz) chickpeas, drained</div>
+        <div class="ingredient">1 can (14 oz) crushed tomatoes</div>
+        <div class="ingredient">1 medium yellow onion, diced</div>
+        <div class="ingredient">4 garlic cloves, minced</div>
+        <div class="ingredient">1 tsp each: cumin, coriander, smoked paprika</div>
+        <div class="ingredient">½ tsp cinnamon</div>
+        <div class="ingredient">¼ tsp cayenne (adjust to taste)</div>
+        <div class="ingredient">1 cup chicken broth</div>
+        <div class="ingredient">2 lemons — zest both, juice one (use your lemons)</div>
+        <div class="ingredient">1½ cups couscous</div>
+        <div class="ingredient">1¾ cups boiling water or broth (for couscous)</div>
+        <div class="ingredient">Fresh parsley or mint to finish</div>
+        <div class="ingredient">2 tbsp olive oil, salt, pepper</div>
+      </div>
+
+      <button class="expand-btn" onclick="toggleSection('steps-moroccan')">
+        Step-by-step instructions <i class="ti ti-chevron-down" aria-hidden="true"></i>
+      </button>
+      <div id="steps-moroccan" class="collapsible">
+        <div class="steps" style="margin-top: 0.75rem;">
+          <div class="step">Bloom the spices: heat olive oil in a large skillet over medium-high. Add onion and cook 4–5 minutes until softened and lightly golden. Add garlic and all dry spices — cook 60 seconds, stirring constantly. Blooming spices in fat unlocks fat-soluble compounds and deepens flavor significantly.</div>
+          <div class="step">Add ground turkey. Break into small pieces and cook until no pink remains, about 5–6 minutes. Don't rush this — full browning develops the Maillard crust that adds depth to the sauce.</div>
+          <div class="step">Pour in crushed tomatoes, chickpeas, and chicken broth. Stir to combine, scraping any fond from the pan bottom. Reduce heat to medium-low and simmer uncovered 15 minutes until sauce thickens.</div>
+          <div class="step">While sauce simmers, make couscous: place in a heatproof bowl, pour boiling water or broth over, cover tightly with plastic wrap or a plate. Rest exactly 5 minutes. Fluff with a fork, add lemon zest and a drizzle of olive oil.</div>
+          <div class="step">Finish the skillet with lemon juice. Taste and adjust salt. The lemon does the work preserved lemon would — bright acidity cuts the warm spices cleanly.</div>
+          <div class="step">Serve turkey mixture over couscous. Top with fresh parsley or mint. Optionally add a spoonful of Greek yogurt — it cools the heat and adds creaminess without extra cooking.</div>
+        </div>
+      </div>
+    </div>
+    <div class="equip-box" style="margin: 0 1.25rem 1rem;">
+      <div class="section-label"><i class="ti ti-flame" aria-hidden="true"></i> Equipment callout</div>
+      <p>No specialty equipment needed here — this is a pure skillet meal. The convection oven setting (if finishing in a covered baking dish) can deepen the sauce further, but stovetop alone is excellent and faster.</p>
+    </div>
+    <div class="nutrition-row" style="margin: 0 1.25rem 1rem;">
+      <div class="nut-card"><div class="nut-val">~470</div><div class="nut-label">Calories</div></div>
+      <div class="nut-card"><div class="nut-val">42g</div><div class="nut-label">Protein</div></div>
+      <div class="nut-card"><div class="nut-val">~50g</div><div class="nut-label">Carbs</div></div>
+      <div class="nut-card"><div class="nut-val">High</div><div class="nut-label">Fiber (chickpeas)</div></div>
+    </div>
+    <div class="meta-row" style="margin: 0 1.25rem 1rem;">
+      <div class="meta-chip"><i class="ti ti-clock" aria-hidden="true"></i> 10 min prep</div>
+      <div class="meta-chip"><i class="ti ti-flame" aria-hidden="true"></i> 30 min cook</div>
+    </div>
+  </div>
+
+  <!-- GROCERY LIST -->
+  <div class="section-divider">Grocery list</div>
+  <div class="grocery-section">
+    <div class="grocery-category">
+      <div class="grocery-cat-label">Produce</div>
+      <div class="grocery-items">
+        <div class="grocery-item">scallions</div>
+        <div class="grocery-item">fresh ginger</div>
+        <div class="grocery-item">garlic (2 heads)</div>
+        <div class="grocery-item">yellow onion</div>
+        <div class="grocery-item">fresh cilantro</div>
+        <div class="grocery-item">fresh parsley or mint</div>
+        <div class="grocery-item">fresh thyme or rosemary</div>
+        <div class="grocery-item">arugula (optional)</div>
+        <div class="grocery-item">✓ lemons — on hand</div>
+        <div class="grocery-item">✓ pineapple — on hand</div>
+      </div>
+    </div>
+    <div class="grocery-category">
+      <div class="grocery-cat-label">Proteins</div>
+      <div class="grocery-items">
+        <div class="grocery-item">large shrimp, 1 lb</div>
+        <div class="grocery-item">boneless skinless chicken thighs, 3 count</div>
+        <div class="grocery-item">lean ground turkey, 1.25 lbs</div>
+        <div class="grocery-item">eggs (half dozen)</div>
+      </div>
+    </div>
+    <div class="grocery-category">
+      <div class="grocery-cat-label">Dairy</div>
+      <div class="grocery-items">
+        <div class="grocery-item">plain Greek yogurt</div>
+        <div class="grocery-item">cream cheese, 4 oz</div>
+        <div class="grocery-item">heavy cream, small carton</div>
+        <div class="grocery-item">fresh mozzarella, 8 oz</div>
+      </div>
+    </div>
+    <div class="grocery-category">
+      <div class="grocery-cat-label">Pantry / dry goods</div>
+      <div class="grocery-items">
+        <div class="grocery-item">jasmine rice, 3 cups</div>
+        <div class="grocery-item">couscous, 1.5 cups</div>
+        <div class="grocery-item">all-purpose flour, 3 cups</div>
+        <div class="grocery-item">instant yeast</div>
+        <div class="grocery-item">frozen peas</div>
+        <div class="grocery-item">roasted cashews</div>
+        <div class="grocery-item">chickpeas, 1 can</div>
+        <div class="grocery-item">crushed tomatoes, 1 can</div>
+        <div class="grocery-item">chicken broth</div>
+        <div class="grocery-item">soy sauce</div>
+        <div class="grocery-item">fish sauce</div>
+        <div class="grocery-item">sesame oil</div>
+        <div class="grocery-item">avocado or canola oil</div>
+        <div class="grocery-item">olive oil</div>
+        <div class="grocery-item">cumin</div>
+        <div class="grocery-item">coriander</div>
+        <div class="grocery-item">smoked paprika</div>
+        <div class="grocery-item">cinnamon</div>
+        <div class="grocery-item">cayenne</div>
+        <div class="grocery-item">red pepper flakes</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+function toggleSection(id) {
+  const el = document.getElementById(id);
+  const btn = el.previousElementSibling;
+  const icon = btn.querySelector('i');
+  el.classList.toggle('open');
+  if (el.classList.contains('open')) {
+    icon.className = 'ti ti-chevron-down';
+    icon.style.transform = 'rotate(180deg)';
+  } else {
+    icon.style.transform = 'rotate(0deg)';
+  }
+}
+</script>
