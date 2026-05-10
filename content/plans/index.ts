@@ -8,6 +8,14 @@ export type PlanMeta = {
   tags: string[];
 };
 
+export type MealMeta = {
+  title: string;
+  planSlug: string;
+  planTitle: string;
+  tags: string[];
+  index: number; // position in plan
+};
+
 export const plans: PlanMeta[] = [
   {
     slug: 'mealtime-plan-may-9',
@@ -23,6 +31,16 @@ export const plans: PlanMeta[] = [
     tags: ['Thai', 'American BBQ', 'Moroccan'],
   },
 ];
+
+export const allMeals: MealMeta[] = plans.flatMap((plan) =>
+  plan.meals.map((meal, index) => ({
+    title: meal,
+    planSlug: plan.slug,
+    planTitle: plan.title,
+    tags: plan.tags,
+    index,
+  }))
+);
 
 export function getPlanBySlug(slug: string): PlanMeta | undefined {
   return plans.find((p) => p.slug === slug);

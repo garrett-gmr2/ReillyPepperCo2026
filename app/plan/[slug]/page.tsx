@@ -36,7 +36,7 @@ export default async function PlanPage({ params }: { params: Promise<{ slug: str
           style={{ color: 'var(--color-text-secondary)' }}
         >
           <i className="ti ti-arrow-left" aria-hidden="true" />
-          All plans
+          All recipes
         </Link>
       </div>
 
