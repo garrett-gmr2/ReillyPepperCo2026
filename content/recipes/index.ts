@@ -63,8 +63,8 @@ export const recipes: Recipe[] = [
       highlight: 'High Vitamin C (pineapple)',
     },
     equipment: 'The Blackstone griddle is ideal here — its large surface area lets you spread all the rice flat for simultaneous crust formation. A standard wok or large skillet works, but you\'ll need to work in batches to avoid steaming.',
-    garrettRating: 5,
-    garrettTake: 'This is the platonic ideal of weeknight fried rice. The pineapple adds brightness, and the cold rice trick is essential. Makes incredible leftovers.',
+    garrettRating: 0,
+    garrettTake: '',
   },
   {
     slug: 'smoker-pizza-on-homemade-naan-white-garlic-chicken',
@@ -111,8 +111,8 @@ export const recipes: Recipe[] = [
       highlight: 'High Selenium (chicken)',
     },
     equipment: 'The pellet smoker does real work here — both the chicken and garlic absorb smoke during the low-temp phase, then the high-heat finish blisters the naan directly on the grates. A pizza stone placed inside the smoker during preheat is optional but adds bottom crunch.',
-    garrettRating: 5,
-    garrettTake: 'The smoke on the naan is genius. Game-changer for pizza night. Roasted garlic cream is silky and the whole setup puts the oven to shame.',
+    garrettRating: 0,
+    garrettTake: '',
   },
   {
     slug: 'moroccan-spiced-turkey-skillet-with-lemon-couscous',
@@ -154,8 +154,8 @@ export const recipes: Recipe[] = [
       highlight: 'High Fiber (chickpeas)',
     },
     equipment: 'No specialty equipment needed here — this is a pure skillet meal. The convection oven setting (if finishing in a covered baking dish) can deepen the sauce further, but stovetop alone is excellent and faster.',
-    garrettRating: 4,
-    garrettTake: 'Warm spices done right. The tomato-chickpea base is rich but not heavy. Lemon hits just right at the end. Easy weeknight rotation.',
+    garrettRating: 5,
+    garrettTake: 'This was amazing. Make sure to char the turkey and don\'t be afraid of the cinnamon. Use a timer to make sure you let the spices & garlic cook the desired amount before adding the ground turkey. A standout recipe.',
   },
   {
     slug: 'grilled-chicken-caesar-wraps',
@@ -201,7 +201,7 @@ export const recipes: Recipe[] = [
     },
     equipment: 'Blender (Ninja preferred) for emulsifying the dressing. Blackstone griddle for simultaneous tortilla toasting and chicken searing.',
     garrettRating: 4,
-    garrettTake: 'Homemade caesar dressing is worth the extra 5 minutes. Anchovies dissolve completely. Wraps stay crispy if you toast the tortillas.',
+    garrettTake: 'Solid option, easily scaleable, and the DIY dressing is worth it.',
   },
   {
     slug: 'korean-chicken-broccoli-plate',
@@ -266,8 +266,8 @@ export const recipes: Recipe[] = [
       highlight: 'High Protein & Vitamin C',
     },
     equipment: 'Wok or large skillet for high-heat stir-frying. Blackstone optional but ideal for simultaneous noodle and chicken cooking.',
-    garrettRating: 5,
-    garrettTake: 'Three components done perfectly. The marinated cucumber adds coolness and crunch. Gochujang glaze has perfect balance. This is the benchmark for multi-plate meals.',
+    garrettRating: 2.5,
+    garrettTake: 'Solid middle-of-the-road dish that\'s very healthy and carried by the sauce addition at the end. The chow mein was also good. A promising recipe we\'ll be revisiting and finding ways to enhance.',
   },
   {
     slug: 'turkish-chicken-shawarma-bowls',
@@ -310,8 +310,8 @@ export const recipes: Recipe[] = [
       highlight: 'High Protein & Probiotics (yogurt)',
     },
     equipment: 'Cast iron skillet or Blackstone griddle for excellent char on the chicken.',
-    garrettRating: 4,
-    garrettTake: 'Yogurt marinade keeps the chicken incredibly moist. Simplified assembly works perfectly for leftovers. Strong staple for the rotation.',
+    garrettRating: 0,
+    garrettTake: '',
   },
   {
     slug: 'korean-gochujang-pork-tenderloin',
@@ -352,8 +352,8 @@ export const recipes: Recipe[] = [
       highlight: 'Lean Cut & Gut-Friendly Gochujang',
     },
     equipment: 'Convection oven for even roasting. Cast iron for initial sear.',
-    garrettRating: 5,
-    garrettTake: 'Tenderloin stays impossibly juicy. The gochujang glaze has perfect depth. High-heat sear followed by moderate roasting is the move. Broccolini gets phenomenal char.',
+    garrettRating: 0,
+    garrettTake: '',
   },
   {
     slug: 'greek-turkey-meatballs-lemon-yogurt-sauce',
@@ -397,8 +397,8 @@ export const recipes: Recipe[] = [
       highlight: 'Lean Protein & Anti-Inflammatory Herbs',
     },
     equipment: 'Oven-safe skillet or sheet pan for finishing meatballs.',
-    garrettRating: 4,
-    garrettTake: 'Herbas are well-balanced. Yogurt sauce is bright without being punchy. Meatballs stay tender. Spinach in the orzo is a nice touch.',
+    garrettRating: 3.7,
+    garrettTake: 'Solid take on a Shannon classic. Very healthy meal. The herbs are well-balanced and the yogurt sauce is bright. We added a side of sautéed kale.',
   },
   {
     slug: 'chicken-avocado-bacon-wraps',
@@ -441,8 +441,8 @@ export const recipes: Recipe[] = [
       highlight: 'Healthy Fats (avocado) & Potassium',
     },
     equipment: 'Blackstone griddle ideal for simultaneous tortilla toasting and chicken searing.',
-    garrettRating: 4,
-    garrettTake: 'Classic flavor combination done right. Lime crema keeps it fresh. Bacon adds smoke without overpowering. Toasted tortillas are essential.',
+    garrettRating: 0,
+    garrettTake: '',
   },
   {
     slug: 'shredded-chicken-tacos',
@@ -491,8 +491,8 @@ export const recipes: Recipe[] = [
       highlight: 'High Protein & Capsaicin (Chipotle)',
     },
     equipment: 'Dutch oven or heavy braising pot. Blender for avocado crema.',
-    garrettRating: 5,
-    garrettTake: 'The braise technique yields insanely tender chicken. Chipotles provide heat and depth. Pickled onions cut through richness perfectly. This is the gold standard for pulled chicken tacos.',
+    garrettRating: 3.5,
+    garrettTake: 'Solid take on a Reilly family classic. The simmering of the chicken pre-shredding is an amazing addition. Adobo peppers make it spicy and smoky.',
   },
 ];
 
