@@ -2,16 +2,16 @@
 
 create table if not exists ratings (
   id          uuid primary key default gen_random_uuid(),
-  plan_slug   text not null,
+  recipe_slug   text not null,
   session_id  text not null,
   stars       smallint not null check (stars between 1 and 5),
   created_at  timestamptz default now(),
-  unique (plan_slug, session_id)
+  unique (recipe_slug, session_id)
 );
 
 create table if not exists comments (
   id          uuid primary key default gen_random_uuid(),
-  plan_slug   text not null,
+  recipe_slug   text not null,
   author_name text not null,
   body        text not null,
   created_at  timestamptz default now()

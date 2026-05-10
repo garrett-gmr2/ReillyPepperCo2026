@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import { allMeals } from '@/content/plans';
+import { recipes } from '@/content/recipes';
 
 export default function HomePage() {
   return (
@@ -17,8 +17,8 @@ export default function HomePage() {
       </div>
 
       <div className="flex flex-col gap-4">
-        {allMeals.map((meal, idx) => (
-          <Link key={idx} href={`/plan/${meal.planSlug}`} className="no-underline block">
+        {recipes.map((recipe) => (
+          <Link key={recipe.slug} href={`/recipe/${recipe.slug}`} className="no-underline block">
             <article
               className="rounded-xl overflow-hidden transition-shadow hover:shadow-md"
               style={{
@@ -40,32 +40,36 @@ export default function HomePage() {
                       className="text-lg font-semibold leading-snug mb-0.5"
                       style={{ color: 'var(--color-text-primary)', fontFamily: 'var(--font-display)' }}
                     >
-                      {meal.title}
+                      {recipe.title}
                     </h2>
                     <p className="text-sm" style={{ color: 'var(--color-text-secondary)' }}>
-                      From {meal.planTitle}
+                      {recipe.ethnicity}
                     </p>
                   </div>
-                  <div className="flex flex-wrap gap-1">
-                    {meal.tags.slice(0, 2).map((tag) => (
-                      <span
-                        key={tag}
-                        className="text-xs px-2 py-1 rounded-full"
-                        style={{
-                          backgroundColor: 'var(--color-background-secondary)',
-                          color: 'var(--color-text-secondary)',
-                        }}
-                      >
-                        {tag}
-                      </span>
-                    ))}
+                  <div className="flex flex-col gap-1 text-right">
+                    <span className="text-xs px-2 py-1 rounded-full" style={{ backgroundColor: 'var(--color-background-secondary)', color: 'var(--color-text-secondary)' }}>
+                      {recipe.prepTime} prep
+                    </span>
+                    <span className="text-xs px-2 py-1 rounded-full" style={{ backgroundColor: 'var(--color-background-secondary)', color: 'var(--color-text-secondary)' }}>
+                      {recipe.cookTime} cook
+                    </span>
                   </div>
                 </div>
 
-                {/* Description placeholder */}
-                <p className="text-sm" style={{ color: 'var(--color-text-secondary)' }}>
-                  Click to view the full recipe in the meal plan.
+                <p className="text-sm mb-3" style={{ color: 'var(--color-text-secondary)' }}>
+                  {recipe.description}
                 </p>
+
+                <div className="flex items-center justify-between gap-3 flex-wrap">
+                  <div className="flex gap-1.5 flex-wrap">
+                    <span className="text-xs px-2 py-0.5 rounded-md" style={{ background: 'var(--color-background-warning)', color: 'var(--color-text-warning)' }}>
+                      {recipe.servings} servings
+                    </span>
+                  </div>
+                  <span className="text-sm font-medium" style={{ color: 'var(--color-brand)' }}>
+                    View recipe →
+                  </span>
+                </div>
               </div>
             </article>
           </Link>

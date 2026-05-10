@@ -4,7 +4,7 @@ import { useEffect, useRef, useState } from 'react';
 
 type Comment = { id: string; author_name: string; body: string; created_at: string };
 
-export default function CommentSection({ planSlug }: { planSlug: string }) {
+export default function CommentSection({ recipeSlug }: { recipeSlug: string }) {
   const [comments, setComments] = useState<Comment[]>([]);
   const [name, setName] = useState('');
   const [body, setBody] = useState('');
@@ -14,11 +14,11 @@ export default function CommentSection({ planSlug }: { planSlug: string }) {
   const nameRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
-    fetch(`/api/comments?planSlug=${planSlug}`)
+    fetch(`/api/comments?recipeSlug=${recipeSlug}`)
       .then((r) => r.json())
       .then((d) => setComments(Array.isArray(d) ? d : []))
       .catch(() => {});
-  }, [planSlug]);
+  }, [recipeSlug]);
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -29,7 +29,7 @@ export default function CommentSection({ planSlug }: { planSlug: string }) {
       const res = await fetch('/api/comments', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ planSlug, authorName: name.trim(), body: body.trim() }),
+        body: JSON.stringify({ recipeSlug, authorName: name.trim(), body: body.trim() }),
       });
       if (!res.ok) throw new Error('Failed to submit');
       const newComment = await res.json();

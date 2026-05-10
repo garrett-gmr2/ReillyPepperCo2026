@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react';
 
 type RatingData = { average: number; count: number; userStars: number | null };
 
-export default function StarRating({ planSlug }: { planSlug: string }) {
+export default function StarRating({ recipeSlug }: { recipeSlug: string }) {
   const [data, setData] = useState<RatingData>({ average: 0, count: 0, userStars: null });
   const [hover, setHover] = useState(0);
   const [submitting, setSubmitting] = useState(false);
@@ -19,11 +19,11 @@ export default function StarRating({ planSlug }: { planSlug: string }) {
     }
     setSessionId(id);
 
-    fetch(`/api/ratings?planSlug=${planSlug}&sessionId=${id}`)
+    fetch(`/api/ratings?recipeSlug=${recipeSlug}&sessionId=${id}`)
       .then((r) => r.json())
       .then((d) => setData(d))
       .catch(() => {});
-  }, [planSlug]);
+  }, [recipeSlug]);
 
   async function submitRating(stars: number) {
     if (!sessionId || submitting) return;
@@ -32,7 +32,7 @@ export default function StarRating({ planSlug }: { planSlug: string }) {
       const res = await fetch('/api/ratings', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ planSlug, sessionId, stars }),
+        body: JSON.stringify({ recipeSlug, sessionId, stars }),
       });
       if (res.ok) {
         const updated = await res.json();

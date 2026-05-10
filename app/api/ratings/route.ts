@@ -4,9 +4,9 @@ import { getSupabase } from '@/lib/supabase';
 type RatingRow = { stars: number; session_id: string };
 
 export async function GET(req: NextRequest) {
-  const planSlug = req.nextUrl.searchParams.get('planSlug');
+  const recipeSlug = req.nextUrl.searchParams.get('recipeSlug');
   const sessionId = req.nextUrl.searchParams.get('sessionId');
-  if (!planSlug) return NextResponse.json({ average: 0, count: 0, userStars: null });
+  if (!recipeSlug) return NextResponse.json({ average: 0, count: 0, userStars: null });
 
   const db = getSupabase();
   if (!db) return NextResponse.json({ average: 0, count: 0, userStars: null });
@@ -15,7 +15,7 @@ export async function GET(req: NextRequest) {
   const { data } = await (db as any)
     .from('ratings')
     .select('stars, session_id')
-    .eq('plan_slug', planSlug) as { data: RatingRow[] | null };
+    .eq('recipe_slug', recipeSlug) as { data: RatingRow[] | null };
 
   if (!data || data.length === 0) {
     return NextResponse.json({ average: 0, count: 0, userStars: null });
@@ -28,8 +28,8 @@ export async function GET(req: NextRequest) {
 }
 
 export async function POST(req: NextRequest) {
-  const { planSlug, sessionId, stars } = await req.json();
-  if (!planSlug || !sessionId || !stars || stars < 1 || stars > 5) {
+  const { recipeSlug, sessionId, stars } = await req.json();
+  if (!recipeSlug || !sessionId || !stars || stars < 1 || stars > 5) {
     return NextResponse.json({ error: 'Invalid input' }, { status: 400 });
   }
 
@@ -41,12 +41,12 @@ export async function POST(req: NextRequest) {
 
   await anyDb
     .from('ratings')
-    .upsert({ plan_slug: planSlug, session_id: sessionId, stars }, { onConflict: 'plan_slug,session_id' });
+    .upsert({ recipe_slug: recipeSlug, session_id: sessionId, stars }, { onConflict: 'recipe_slug,session_id' });
 
   const { data } = await anyDb
     .from('ratings')
     .select('stars, session_id')
-    .eq('plan_slug', planSlug) as { data: RatingRow[] | null };
+    .eq('recipe_slug', recipeSlug) as { data: RatingRow[] | null };
 
   if (!data) return NextResponse.json({ average: stars, count: 1, userStars: stars });
 
