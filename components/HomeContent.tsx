@@ -6,17 +6,20 @@ import { recipes } from '@/content/recipes';
 
 type RecipeWithRating = typeof recipes[0] & { averageRating: number; ratingCount: number };
 
-const ethnicityColors: Record<string, string> = {
-  'Southeast Asian — Thai': '#be2d2d',
-  'North African — Moroccan': '#d2691e',
-  'South Asian base · American BBQ technique': '#8b4513',
+const categoryColors: Record<string, string> = {
+  'Asian': '#be2d2d',
+  'Middle Eastern': '#d2691e',
+  'BBQ': '#8b4513',
+  'European': '#556b2f',
+  'Latin American': '#c41e3a',
+  'American': '#2c5aa0',
 };
 
-const ethnicities = Object.keys(ethnicityColors);
+const categories = Object.keys(categoryColors);
 
 export default function HomeContent() {
   const [filteredRecipes, setFilteredRecipes] = useState<RecipeWithRating[]>([]);
-  const [selectedEthnicity, setSelectedEthnicity] = useState<string>('All');
+  const [selectedCategory, setSelectedCategory] = useState<string>('All');
 
   useEffect(() => {
     const fetchRatings = async () => {
@@ -31,19 +34,36 @@ export default function HomeContent() {
           }
         })
       );
-      const sorted = recipesWithRatings.sort((a, b) => b.averageRating - a.averageRating);
+      // Sort by Garrett's rating first, then by community average
+      const sorted = recipesWithRatings.sort((a, b) => {
+        if (b.garrettRating !== a.garrettRating) {
+          return b.garrettRating - a.garrettRating;
+        }
+        return b.averageRating - a.averageRating;
+      });
       setFilteredRecipes(sorted);
     };
     fetchRatings();
   }, []);
 
   useEffect(() => {
-    if (selectedEthnicity === 'All') {
-      setFilteredRecipes(prev => [...prev].sort((a, b) => b.averageRating - a.averageRating));
-    } else {
-      setFilteredRecipes(prev => prev.filter(r => r.ethnicity === selectedEthnicity).sort((a, b) => b.averageRating - a.averageRating));
-    }
-  }, [selectedEthnicity]);
+    const filtered = selectedCategory === 'All' 
+      ? recipes 
+      : recipes.filter(r => r.category === selectedCategory);
+
+    const withRatings = filtered.map(recipe => {
+      const existing = filteredRecipes.find(r => r.slug === recipe.slug);
+      return existing || { ...recipe, averageRating: 0, ratingCount: 0 };
+    });
+
+    const sorted = withRatings.sort((a, b) => {
+      if (b.garrettRating !== a.garrettRating) {
+        return b.garrettRating - a.garrettRating;
+      }
+      return b.averageRating - a.averageRating;
+    });
+    setFilteredRecipes(sorted);
+  }, [selectedCategory]);
 
   return (
     <>
@@ -59,26 +79,26 @@ export default function HomeContent() {
         </p>
       </div>
 
-      {/* Ethnicity Filter */}
+      {/* Category Filter */}
       <div className="mb-6 flex flex-wrap gap-2">
         <button
-          onClick={() => setSelectedEthnicity('All')}
-          className={`px-3 py-1 rounded-full text-sm ${selectedEthnicity === 'All' ? 'bg-current text-white' : 'bg-gray-200 text-gray-700'}`}
-          style={selectedEthnicity === 'All' ? { backgroundColor: 'var(--color-brand)', color: 'white' } : {}}
+          onClick={() => setSelectedCategory('All')}
+          className={`px-3 py-1 rounded-full text-sm ${selectedCategory === 'All' ? 'bg-current text-white' : 'bg-gray-200 text-gray-700'}`}
+          style={selectedCategory === 'All' ? { backgroundColor: 'var(--color-brand)', color: 'white' } : {}}
         >
           All
         </button>
-        {ethnicities.map((eth) => (
+        {categories.map((cat) => (
           <button
-            key={eth}
-            onClick={() => setSelectedEthnicity(eth)}
-            className={`px-3 py-1 rounded-full text-sm ${selectedEthnicity === eth ? 'text-white' : 'text-gray-700'}`}
+            key={cat}
+            onClick={() => setSelectedCategory(cat)}
+            className={`px-3 py-1 rounded-full text-sm ${selectedCategory === cat ? 'text-white' : 'text-gray-700'}`}
             style={{
-              backgroundColor: selectedEthnicity === eth ? ethnicityColors[eth] : 'var(--color-background-secondary)',
-              color: selectedEthnicity === eth ? 'white' : 'var(--color-text-secondary)',
+              backgroundColor: selectedCategory === cat ? categoryColors[cat] : 'var(--color-background-secondary)',
+              color: selectedCategory === cat ? 'white' : 'var(--color-text-secondary)',
             }}
           >
-            {eth.split(' — ')[0] || eth}
+            {cat}
           </button>
         ))}
       </div>
@@ -93,10 +113,10 @@ export default function HomeContent() {
                 border: '0.5px solid var(--color-border-tertiary)',
               }}
             >
-              {/* Ethnicity Color bar */}
+              {/* Category Color bar */}
               <div
                 className="h-1.5"
-                style={{ backgroundColor: ethnicityColors[recipe.ethnicity] || 'var(--color-brand)' }}
+                style={{ backgroundColor: categoryColors[recipe.category] || 'var(--color-brand)' }}
               />
 
               <div className="p-5">
@@ -110,7 +130,7 @@ export default function HomeContent() {
                       {recipe.title}
                     </h2>
                     <p className="text-sm" style={{ color: 'var(--color-text-secondary)' }}>
-                      {recipe.ethnicity}
+                      {recipe.category}
                     </p>
                   </div>
                   <div className="flex flex-col gap-1 text-right">
@@ -120,11 +140,6 @@ export default function HomeContent() {
                     <span className="text-xs px-2 py-1 rounded-full" style={{ backgroundColor: 'var(--color-background-secondary)', color: 'var(--color-text-secondary)' }}>
                       {recipe.cookTime} cook
                     </span>
-                    {recipe.averageRating > 0 && (
-                      <span className="text-xs px-2 py-1 rounded-full" style={{ backgroundColor: 'var(--color-background-warning)', color: 'var(--color-text-warning)' }}>
-                        ★ {recipe.averageRating.toFixed(1)} ({recipe.ratingCount})
-                      </span>
-                    )}
                   </div>
                 </div>
 
@@ -132,11 +147,43 @@ export default function HomeContent() {
                   {recipe.description}
                 </p>
 
+                {/* Garrett's Take Section */}
+                <div
+                  className="p-3 rounded-lg mb-3"
+                  style={{
+                    background: 'var(--color-background-secondary)',
+                    borderLeft: '3px solid var(--color-brand)',
+                  }}
+                >
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '6px' }}>
+                    <span style={{ fontSize: '13px', fontWeight: '600', color: 'var(--color-text-primary)' }}>
+                      Garrett's Rating
+                    </span>
+                    <span
+                      style={{
+                        fontSize: '16px',
+                        fontWeight: '600',
+                        color: 'var(--color-brand)',
+                      }}
+                    >
+                      {'★'.repeat(recipe.garrettRating)}{'☆'.repeat(5 - recipe.garrettRating)}
+                    </span>
+                  </div>
+                  <p style={{ fontSize: '13px', color: 'var(--color-text-secondary)', margin: 0, fontStyle: 'italic' }}>
+                    {recipe.garrettTake}
+                  </p>
+                </div>
+
                 <div className="flex items-center justify-between gap-3 flex-wrap">
                   <div className="flex gap-1.5 flex-wrap">
                     <span className="text-xs px-2 py-0.5 rounded-md" style={{ background: 'var(--color-background-warning)', color: 'var(--color-text-warning)' }}>
                       {recipe.servings} servings
                     </span>
+                    {recipe.averageRating > 0 && (
+                      <span className="text-xs px-2 py-0.5 rounded-md" style={{ background: 'var(--color-background-secondary)', color: 'var(--color-text-secondary)' }}>
+                        ★ {recipe.averageRating.toFixed(1)} ({recipe.ratingCount} ratings)
+                      </span>
+                    )}
                   </div>
                   <span
                     className="text-sm font-medium"
