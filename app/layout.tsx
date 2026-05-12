@@ -8,7 +8,7 @@ const playfair = Playfair_Display({ subsets: ['latin'], variable: '--font-displa
 
 export const metadata: Metadata = {
   title: 'Reilly Pepper Co.',
-  description: 'Family recipes, made with love.',
+  description: 'Healthy, worldly recipe experiments for family meals.',
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {

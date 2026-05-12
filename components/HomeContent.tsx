@@ -86,10 +86,10 @@ export default function HomeContent() {
           className="text-3xl font-semibold mb-1"
           style={{ fontFamily: 'var(--font-display)', color: 'var(--color-text-primary)' }}
         >
-          Reilly Pepper Co. Recipes
+          Worldly recipe adventures
         </h1>
         <p style={{ color: 'var(--color-text-secondary)', fontSize: 15 }}>
-          AI-crafted recipes built around what we love to cook and eat. Follow us <a href="https://www.instagram.com/reillypepperco/" target="_blank" rel="noopener" style={{ color: 'var(--color-brand)' }}>@reillypepperco</a>
+          Healthy recipes rooted in global flavors, made to explore together. Join us for a culinary adventure and follow along <a href="https://www.instagram.com/reillypepperco/" target="_blank" rel="noopener" style={{ color: 'var(--color-brand)' }}>@reillypepperco</a>
         </p>
       </div>
 
