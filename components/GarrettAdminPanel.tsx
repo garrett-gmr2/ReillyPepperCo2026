@@ -37,7 +37,7 @@ export default function GarrettAdminPanel() {
             title: recipe.title,
             category: recipe.category,
             rating: match?.rating ?? 0,
-            take: match?.take ?? recipe.garrettTake || '',
+            take: (match?.take ?? recipe.garrettTake) || '',
           };
         });
         setRows(mapped);
