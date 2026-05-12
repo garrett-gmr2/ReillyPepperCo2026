@@ -1,34 +1,36 @@
 'use client';
 
 import { useState } from 'react';
-import { useRouter } from 'next/navigation';
 
 export default function AdminLoginPage() {
   const [password, setPassword] = useState('');
   const [error, setError] = useState<string | null>(null);
   const [isSaving, setIsSaving] = useState(false);
-  const router = useRouter();
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     setIsSaving(true);
     setError(null);
 
-    const res = await fetch('/api/admin/login', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ password }),
-    });
+    try {
+      const res = await fetch('/api/admin/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ password }),
+      });
 
-    setIsSaving(false);
+      if (!res.ok) {
+        const json = await res.json().catch(() => null);
+        setError(json?.error || 'Unable to sign in.');
+        return;
+      }
 
-    if (!res.ok) {
-      const json = await res.json();
-      setError(json?.error || 'Unable to sign in.');
-      return;
+      window.location.assign('/admin');
+    } catch (err) {
+      setError('Unable to sign in. Please check your connection.');
+    } finally {
+      setIsSaving(false);
     }
-
-    router.push('/admin');
   };
 
   return (
