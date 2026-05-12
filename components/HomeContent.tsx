@@ -6,64 +6,78 @@ import { recipes } from '@/content/recipes';
 
 type RecipeWithRating = typeof recipes[0] & { averageRating: number; ratingCount: number };
 
+type GarrettTakeRow = { recipe_slug: string; rating: number; take: string };
+
 const categoryColors: Record<string, string> = {
-  'Asian': '#be2d2d',
+  Asian: '#be2d2d',
   'Middle Eastern': '#d2691e',
-  'BBQ': '#8b4513',
-  'European': '#556b2f',
+  BBQ: '#8b4513',
+  European: '#556b2f',
   'Latin American': '#c41e3a',
-  'American': '#2c5aa0',
+  American: '#2c5aa0',
 };
 
 const categories = Object.keys(categoryColors);
 
 export default function HomeContent() {
+  const [allRecipes, setAllRecipes] = useState<RecipeWithRating[]>([]);
   const [filteredRecipes, setFilteredRecipes] = useState<RecipeWithRating[]>([]);
   const [selectedCategory, setSelectedCategory] = useState<string>('All');
 
   useEffect(() => {
     const fetchRatings = async () => {
-      const recipesWithRatings = await Promise.all(
+      const ratingResults = await Promise.all(
         recipes.map(async (recipe) => {
           try {
             const res = await fetch(`/api/ratings?recipeSlug=${recipe.slug}`);
             const data = await res.json();
-            return { ...recipe, averageRating: data.average || 0, ratingCount: data.count || 0 };
+            return { slug: recipe.slug, averageRating: data.average || 0, ratingCount: data.count || 0 };
           } catch {
-            return { ...recipe, averageRating: 0, ratingCount: 0 };
+            return { slug: recipe.slug, averageRating: 0, ratingCount: 0 };
           }
         })
       );
-      // Sort by Garrett's rating first, then by community average
-      const sorted = recipesWithRatings.sort((a, b) => {
-        if (b.garrettRating !== a.garrettRating) {
-          return b.garrettRating - a.garrettRating;
-        }
+
+      const takesRes = await fetch('/api/garrett-takes');
+      const takesJson = await takesRes.json();
+      const takes: GarrettTakeRow[] = takesJson.takes || [];
+
+      const merged = recipes.map((recipe) => {
+        const ratingMeta = ratingResults.find((item) => item.slug === recipe.slug);
+        const takeMatch = takes.find((row) => row.recipe_slug === recipe.slug);
+        return {
+          ...recipe,
+          averageRating: ratingMeta?.averageRating ?? 0,
+          ratingCount: ratingMeta?.ratingCount ?? 0,
+          garrettRating: takeMatch?.rating ?? recipe.garrettRating,
+          garrettTake: takeMatch?.take ?? recipe.garrettTake,
+        };
+      });
+
+      const sorted = merged.sort((a, b) => {
+        if (b.garrettRating !== a.garrettRating) return b.garrettRating - a.garrettRating;
         return b.averageRating - a.averageRating;
       });
+
+      setAllRecipes(sorted);
       setFilteredRecipes(sorted);
     };
+
     fetchRatings();
   }, []);
 
   useEffect(() => {
-    const filtered = selectedCategory === 'All' 
-      ? recipes 
-      : recipes.filter(r => r.category === selectedCategory);
+    const filtered = selectedCategory === 'All'
+      ? allRecipes
+      : allRecipes.filter((r) => r.category === selectedCategory);
 
-    const withRatings = filtered.map(recipe => {
-      const existing = filteredRecipes.find(r => r.slug === recipe.slug);
-      return existing || { ...recipe, averageRating: 0, ratingCount: 0 };
-    });
-
-    const sorted = withRatings.sort((a, b) => {
-      if (b.garrettRating !== a.garrettRating) {
-        return b.garrettRating - a.garrettRating;
-      }
+    const sorted = filtered.slice().sort((a, b) => {
+      if (b.garrettRating !== a.garrettRating) return b.garrettRating - a.garrettRating;
       return b.averageRating - a.averageRating;
     });
+
     setFilteredRecipes(sorted);
-  }, [selectedCategory]);
+  }, [selectedCategory, allRecipes]);
 
   return (
     <>
@@ -79,7 +93,6 @@ export default function HomeContent() {
         </p>
       </div>
 
-      {/* Category Filter */}
       <div className="mb-6 flex flex-wrap gap-2">
         <button
           onClick={() => setSelectedCategory('All')}
@@ -113,14 +126,9 @@ export default function HomeContent() {
                 border: '0.5px solid var(--color-border-tertiary)',
               }}
             >
-              {/* Category Color bar */}
-              <div
-                className="h-1.5"
-                style={{ backgroundColor: categoryColors[recipe.category] || 'var(--color-brand)' }}
-              />
+              <div className="h-1.5" style={{ backgroundColor: categoryColors[recipe.category] || 'var(--color-brand)' }} />
 
               <div className="p-5">
-                {/* Header row */}
                 <div className="flex items-start justify-between gap-3 mb-3">
                   <div>
                     <h2
@@ -147,25 +155,12 @@ export default function HomeContent() {
                   {recipe.description}
                 </p>
 
-                {/* Garrett's Take Section */}
-                <div
-                  className="p-3 rounded-lg mb-3"
-                  style={{
-                    background: 'var(--color-background-secondary)',
-                    borderLeft: '3px solid var(--color-brand)',
-                  }}
-                >
+                <div className="p-3 rounded-lg mb-3" style={{ background: 'var(--color-background-secondary)', borderLeft: '3px solid var(--color-brand)' }}>
                   <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '6px' }}>
                     <span style={{ fontSize: '13px', fontWeight: '600', color: 'var(--color-text-primary)' }}>
                       Garrett's Rating
                     </span>
-                    <span
-                      style={{
-                        fontSize: '16px',
-                        fontWeight: '600',
-                        color: 'var(--color-brand)',
-                      }}
-                    >
+                    <span style={{ fontSize: '16px', fontWeight: '600', color: 'var(--color-brand)' }}>
                       {'★'.repeat(recipe.garrettRating)}{'☆'.repeat(5 - recipe.garrettRating)}
                     </span>
                   </div>
@@ -185,10 +180,7 @@ export default function HomeContent() {
                       </span>
                     )}
                   </div>
-                  <span
-                    className="text-sm font-medium"
-                    style={{ color: 'var(--color-brand)' }}
-                  >
+                  <span className="text-sm font-medium" style={{ color: 'var(--color-brand)' }}>
                     View recipe →
                   </span>
                 </div>

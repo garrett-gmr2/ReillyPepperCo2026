@@ -4,13 +4,18 @@ export type Database = {
   public: {
     Tables: {
       ratings: {
-        Row: { id: string; plan_slug: string; session_id: string; stars: number; created_at: string };
-        Insert: { plan_slug: string; session_id: string; stars: number };
+        Row: { id: string; recipe_slug: string; session_id: string; stars: number; created_at: string };
+        Insert: { recipe_slug: string; session_id: string; stars: number };
         Update: { stars?: number };
       };
       comments: {
-        Row: { id: string; plan_slug: string; author_name: string; body: string; created_at: string };
-        Insert: { plan_slug: string; author_name: string; body: string };
+        Row: { id: string; recipe_slug: string; author_name: string; body: string; created_at: string };
+        Insert: { recipe_slug: string; author_name: string; body: string };
+      };
+      garrett_takes: {
+        Row: { recipe_slug: string; rating: number; take: string; updated_at: string };
+        Insert: { recipe_slug: string; rating: number; take: string };
+        Update: { rating?: number; take?: string };
       };
     };
   };

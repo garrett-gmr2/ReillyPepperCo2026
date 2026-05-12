@@ -1,6 +1,7 @@
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import { getRecipeBySlug, recipes } from '@/content/recipes';
+import { getSupabase } from '@/lib/supabase';
 import StarRating from '@/components/StarRating';
 import CommentSection from '@/components/CommentSection';
 
@@ -19,6 +20,25 @@ export default async function RecipePage({ params }: { params: Promise<{ slug: s
   const { slug } = await params;
   const recipe = getRecipeBySlug(slug);
   if (!recipe) notFound();
+
+  const db = getSupabase();
+  let garrettRating = recipe.garrettRating;
+  let garrettTake = recipe.garrettTake;
+
+  if (db) {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const anyDb = db as any;
+    const { data } = await anyDb
+      .from('garrett_takes')
+      .select('rating, take')
+      .eq('recipe_slug', slug)
+      .maybeSingle();
+
+    if (data) {
+      garrettRating = data.rating ?? garrettRating;
+      garrettTake = data.take ?? garrettTake;
+    }
+  }
 
   return (
     <>
@@ -60,6 +80,19 @@ export default async function RecipePage({ params }: { params: Promise<{ slug: s
           <i className="ti ti-flame" aria-hidden="true" />
           <span className="text-sm">{recipe.cookTime} cook</span>
         </div>
+      </div>
+
+      <div className="mb-6 p-5 rounded-xl" style={{ backgroundColor: 'var(--color-background-secondary)', border: '0.5px solid var(--color-border-tertiary)' }}>
+        <div className="text-sm font-semibold mb-2" style={{ color: 'var(--color-text-primary)' }}>
+          Garrett's take
+        </div>
+        <div className="flex items-center gap-2 mb-3">
+          <span style={{ fontSize: 16, color: 'var(--color-brand)' }}>{'★'.repeat(garrettRating)}{'☆'.repeat(5 - garrettRating)}</span>
+          <span className="text-sm" style={{ color: 'var(--color-text-secondary)' }}>Garrett's live rating</span>
+        </div>
+        <p className="text-sm" style={{ color: 'var(--color-text-secondary)', fontStyle: 'italic' }}>
+          {garrettTake || 'No take available yet. Update Garrett’s take in the admin panel.'}
+        </p>
       </div>
 
       {/* Ingredients */}
