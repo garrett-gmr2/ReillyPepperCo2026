@@ -30,13 +30,70 @@ alter table ratings enable row level security;
 alter table comments enable row level security;
 alter table garrett_takes enable row level security;
 
-create policy "public read ratings"   on ratings for select using (true);
-create policy "public insert ratings" on ratings for insert with check (true);
-create policy "public update ratings" on ratings for update using (true);
+do $$
+begin
+  if not exists (
+    select 1 from pg_policies p
+    where p.policyname = 'public read ratings' and p.tablename = 'ratings'
+  ) then
+    create policy "public read ratings" on ratings for select using (true);
+  end if;
 
-create policy "public read comments"   on comments for select using (true);
-create policy "public insert comments" on comments for insert with check (true);
+  if not exists (
+    select 1 from pg_policies p
+    where p.policyname = 'public insert ratings' and p.tablename = 'ratings'
+  ) then
+    create policy "public insert ratings" on ratings for insert with check (true);
+  end if;
 
-create policy "public read garrett takes"   on garrett_takes for select using (true);
-create policy "public insert garrett takes" on garrett_takes for insert with check (true);
-create policy "public update garrett takes" on garrett_takes for update using (true);
+  if not exists (
+    select 1 from pg_policies p
+    where p.policyname = 'public update ratings' and p.tablename = 'ratings'
+  ) then
+    create policy "public update ratings" on ratings for update using (true);
+  end if;
+end
+$$;
+
+do $$
+begin
+  if not exists (
+    select 1 from pg_policies p
+    where p.policyname = 'public read comments' and p.tablename = 'comments'
+  ) then
+    create policy "public read comments" on comments for select using (true);
+  end if;
+
+  if not exists (
+    select 1 from pg_policies p
+    where p.policyname = 'public insert comments' and p.tablename = 'comments'
+  ) then
+    create policy "public insert comments" on comments for insert with check (true);
+  end if;
+end
+$$;
+
+do $$
+begin
+  if not exists (
+    select 1 from pg_policies p
+    where p.policyname = 'public read garrett takes' and p.tablename = 'garrett_takes'
+  ) then
+    create policy "public read garrett takes" on garrett_takes for select using (true);
+  end if;
+
+  if not exists (
+    select 1 from pg_policies p
+    where p.policyname = 'public insert garrett takes' and p.tablename = 'garrett_takes'
+  ) then
+    create policy "public insert garrett takes" on garrett_takes for insert with check (true);
+  end if;
+
+  if not exists (
+    select 1 from pg_policies p
+    where p.policyname = 'public update garrett takes' and p.tablename = 'garrett_takes'
+  ) then
+    create policy "public update garrett takes" on garrett_takes for update using (true);
+  end if;
+end
+$$;
