@@ -1,22 +1,28 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { createHmac } from 'crypto';
 
 const ADMIN_COOKIE = 'admin_auth';
 const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD;
 const ADMIN_SECRET = process.env.ADMIN_SECRET;
 
-const getAuthToken = () => {
-  if (!ADMIN_PASSWORD || !ADMIN_SECRET) return '';
-  return createHmac('sha256', ADMIN_SECRET).update(ADMIN_PASSWORD).digest('hex');
+const hashValue = async (value: string) => {
+  const encoder = new TextEncoder();
+  const data = encoder.encode(value);
+  const digest = await crypto.subtle.digest('SHA-256', data);
+  return Array.from(new Uint8Array(digest)).map((byte) => byte.toString(16).padStart(2, '0')).join('');
 };
 
-const isAuthorized = (req: NextRequest) => {
+const getAuthToken = async () => {
+  if (!ADMIN_PASSWORD || !ADMIN_SECRET) return '';
+  return hashValue(ADMIN_SECRET + ADMIN_PASSWORD);
+};
+
+const isAuthorized = async (req: NextRequest) => {
   const cookie = req.cookies.get(ADMIN_COOKIE)?.value;
-  const expected = getAuthToken();
+  const expected = await getAuthToken();
   return cookie === expected && !!expected;
 };
 
-export function middleware(req: NextRequest) {
+export async function middleware(req: NextRequest) {
   const { pathname } = req.nextUrl;
 
   if (pathname === '/admin/login' || pathname === '/api/admin/login') {
@@ -36,7 +42,7 @@ export function middleware(req: NextRequest) {
   }
 
   if (pathname.startsWith('/admin')) {
-    if (!isAuthorized(req)) {
+    if (!(await isAuthorized(req))) {
       const loginUrl = new URL('/admin/login', req.url);
       return NextResponse.redirect(loginUrl);
     }
@@ -44,7 +50,7 @@ export function middleware(req: NextRequest) {
   }
 
   if (pathname === '/api/garrett-takes' && req.method === 'POST') {
-    if (!isAuthorized(req)) {
+    if (!(await isAuthorized(req))) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
   }
