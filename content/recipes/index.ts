@@ -1008,7 +1008,7 @@ export const recipes: Recipe[] = [
     },
     equipment: 'Blackstone griddle for staged high-heat cooking — chars the peaches, sears the shrimp, and toasts the tortillas in sequence on one hot surface.',
     garrettRating: 4,
-    garrettTake: 'Good. The charred peach salsa is a creative move that works — worth making again when peaches are in season.',
+    garrettTake: 'A good salsa — a great example of using in-season fruit to build something zesty and fresh for tacos.',
   },
   {
     slug: 'chicken-sausage-meat-sauce',
