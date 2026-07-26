@@ -796,8 +796,8 @@ export const recipes: Recipe[] = [
       highlight: 'Per empanada · Baked, not fried',
     },
     equipment: 'Convection oven for even browning on every tray. Blackstone or wide cast iron ideal for the large-batch filling. Goya Tapas Discos (freezer/Hispanic foods section) — 5 packs for 48 empanadas.',
-    garrettRating: 0,
-    garrettTake: '',
+    garrettRating: 3,
+    garrettTake: 'Good, worth experimenting with. The chimichurri carried it — don\'t skip that.',
   },
   {
     slug: 'chimichurri',
@@ -831,8 +831,8 @@ export const recipes: Recipe[] = [
       highlight: 'Anti-Inflammatory Herbs & Olive Oil',
     },
     equipment: 'Ninja blender or food processor. A jar for storage — it only gets better as it sits.',
-    garrettRating: 0,
-    garrettTake: '',
+    garrettRating: 5,
+    garrettTake: 'Perfect recipe. A must-make alongside the empanadas — it elevated the whole spread.',
   },
   {
     slug: 'smoked-pulled-chicken-thighs',
@@ -911,8 +911,8 @@ export const recipes: Recipe[] = [
       highlight: 'Lean Turkey & Healthy Fats (avocado)',
     },
     equipment: 'Blackstone griddle. Two-zone approach — screaming hot for jalapeño blister, medium-high for patties. Dome lid for melting cheese.',
-    garrettRating: 0,
-    garrettTake: '',
+    garrettRating: 5,
+    garrettTake: 'Best turkey burgers I\'ve ever made — guests agreed. The blistered jalapeños and chipotle-yogurt spread are the difference makers.',
   },
   {
     slug: 'shrimp-tacos-mango-jalapeno-salsa',
@@ -957,8 +957,8 @@ export const recipes: Recipe[] = [
       highlight: 'Lean Protein & Vitamin C (mango)',
     },
     equipment: 'Blackstone griddle — high, dry heat for searing shrimp and charring tortillas simultaneously on different zones.',
-    garrettRating: 0,
-    garrettTake: '',
+    garrettRating: 5,
+    garrettTake: 'Amazing on the tacos. The mango-jalapeño combo is a standout — bright, sweet, and spicy all at once.',
   },
   {
     slug: 'shrimp-tacos-charred-peach-salsa',
@@ -1007,8 +1007,8 @@ export const recipes: Recipe[] = [
       highlight: 'Lean Shrimp & Charred Stone Fruit',
     },
     equipment: 'Blackstone griddle for staged high-heat cooking — chars the peaches, sears the shrimp, and toasts the tortillas in sequence on one hot surface.',
-    garrettRating: 0,
-    garrettTake: '',
+    garrettRating: 4,
+    garrettTake: 'Good. The charred peach salsa is a creative move that works — worth making again when peaches are in season.',
   },
   {
     slug: 'chicken-sausage-meat-sauce',
@@ -1051,8 +1051,8 @@ export const recipes: Recipe[] = [
       highlight: 'Lean Sausage & Slow-Built Fond',
     },
     equipment: 'Cast iron skillet for the sear — holds heat well enough to build real fond rather than steaming the meat.',
-    garrettRating: 0,
-    garrettTake: '',
+    garrettRating: 5,
+    garrettTake: 'Amazing. Deglazing the pan and building the fond is what makes this special — jarred sauce becomes genuinely great.',
   },
 ];
 
