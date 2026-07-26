@@ -111,8 +111,8 @@ export const recipes: Recipe[] = [
       highlight: 'High Selenium (chicken)',
     },
     equipment: 'The pellet smoker does real work here — both the chicken and garlic absorb smoke during the low-temp phase, then the high-heat finish blisters the naan directly on the grates. A pizza stone placed inside the smoker during preheat is optional but adds bottom crunch.',
-    garrettRating: 0,
-    garrettTake: '',
+    garrettRating: 5,
+    garrettTake: 'Perfect and worth every bit of effort. Trish said it was restaurant quality — hard to argue.',
   },
   {
     slug: 'moroccan-spiced-turkey-skillet-with-lemon-couscous',
@@ -441,8 +441,8 @@ export const recipes: Recipe[] = [
       highlight: 'Healthy Fats (avocado) & Potassium',
     },
     equipment: 'Blackstone griddle ideal for simultaneous tortilla toasting and chicken searing.',
-    garrettRating: 0,
-    garrettTake: '',
+    garrettRating: 4,
+    garrettTake: 'A ski trip staple that holds up just as well for work lunches. Reliable and crowd-friendly.',
   },
   {
     slug: 'thai-ginger-cilantro-chicken-stir-fry-in-lettuce-cups',
@@ -569,8 +569,8 @@ export const recipes: Recipe[] = [
       highlight: 'Bright green + creamy avocado body',
     },
     equipment: 'Ninja blender or similar, foil-lined sheet pan, broiler.',
-    garrettRating: 0,
-    garrettTake: '',
+    garrettRating: 4,
+    garrettTake: 'Refreshing and great. Bright, smoky, and versatile — pairs well with just about anything off the grill.',
   },
   {
     slug: 'shredded-chicken-tacos',
@@ -654,8 +654,8 @@ export const recipes: Recipe[] = [
       highlight: 'Lean Protein & Low Fat',
     },
     equipment: 'Pellet smoker (applewood), meat thermometer, large mixing bowl for the marinade.',
-    garrettRating: 0,
-    garrettTake: '',
+    garrettRating: 5,
+    garrettTake: 'The best meat for sandwiches, full stop. Don\'t skip the marinade — it\'s everything. Finish with a torch for that crusted look.',
   },
   {
     slug: 'pepper-jelly-sharp-cheddar-grilled-cheese',
